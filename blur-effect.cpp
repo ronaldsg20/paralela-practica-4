@@ -2,9 +2,9 @@
 # include <iomanip>
 # include <iostream>
 # include <mpi.h>
-#include <omp.h>
-#include <opencv2/opencv.hpp>
-
+# include <omp.h>
+# include <opencv2/opencv.hpp>
+using namespace cv;
 using namespace std;
 
 int main ( int argc, char *argv[] ){
@@ -56,7 +56,7 @@ int main ( int argc, char *argv[] ){
 
 // split the array and launch the number of threads specified
 
-    #pragma omp parallel num_threads(THREADS)
+    #pragma omp parallel num_threads(threads)
         {
             int tn = omp_get_thread_num();
             //int ini = (int)(width/THREADS)*(tn-1);
