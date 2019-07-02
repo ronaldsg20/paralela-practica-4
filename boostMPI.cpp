@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
     int h = input.rows/world.size();
     cv::Mat sliced; 
     cout<<"I am  process "<<world.rank()<<" and input at (0,0) = "<<input.at<cv::Vec3b>(cv::Point(0,0))<<endl;
-    for(int i =0;i<5;i++){
+    for(int i =0;i<world.size();i++){
         sliced = input(cv::Rect(0,i*h,w,h));
         mats.push_back(sliced);
         cout<<"I am  process "<<world.rank()<<" and sliced at (0,0) = "<<sliced.at<cv::Vec3b>(cv::Point(0,0))<<endl;
