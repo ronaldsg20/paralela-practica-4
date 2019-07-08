@@ -110,16 +110,16 @@ int main(int argc, char* argv[]) {
     cv::Mat output;
     vector<cv::Mat> mats;
     vector<cv::Mat> matsReceived;
-
-
-    if(world.rank() == 0){
-        //slice image and stores in the vector
-        input = cv::imread(iFile);
+    input = cv::imread(iFile);
         if ( !input.data )
         {
             printf("No image data \n");
             return -1;
         }
+
+    /* if(world.rank() == 0){
+        //slice image and stores in the vector
+        
         int w = input.cols;
         int h = input.rows/world.size();
         cv::Mat sliced; 
@@ -129,9 +129,19 @@ int main(int argc, char* argv[]) {
         }
     }
     //scatter on the processes
-    scatter(world,mats,myImage,0);
+    scatter(world,mats,myImage,0); */
     
     // Do the blur on the slice
+    int w = input.cols;
+    int h = input.rows/world.size();
+
+    if(world.rank()==0){
+        myImage = input(cv::Rect(0,(world.rank()*h),w,h+15));
+    }else if(world.rank()==world.size()-1){
+         myImage = input(cv::Rect(0,(world.rank()*h)-15,w,h+15));
+    }else{
+        myImage = input(cv::Rect(0,(world.rank()*h)-15,w,h+30));
+    }
     width = myImage.cols;
     height = myImage.rows;
     myImageOut=myImage.clone();
@@ -153,6 +163,14 @@ int main(int argc, char* argv[]) {
             }
         }
         //printf("I'm the thread %d on process %d \n",tn,world.rank());
+    }
+
+    if(world.rank()==0){
+        myImageOut = myImageOut(cv::Rect(0,0,w,h));
+    }else if(world.rank()==world.size()-1){
+        myImageOut = myImageOut(cv::Rect(0,15,w,h));
+    }else{
+        myImageOut = myImageOut(cv::Rect(0,15,w,h));
     }
 
     //gather the result
